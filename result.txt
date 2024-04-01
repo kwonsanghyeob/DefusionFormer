@@ -1,0 +1,21 @@
+test_Autoformer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.8381316661834717, mae:0.7273949384689331
+
+test_Autoformer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.84598308801651, mae:0.7312372326850891
+
+test_Transformer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.8173379898071289, mae:0.6941648721694946
+
+test_Transformer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.8210986852645874, mae:0.6956135630607605
+
+test_Informer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.9212338924407959, mae:0.737011194229126
+
+test_Reformer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.8951807618141174, mae:0.73375004529953
+
+test_Autoformer_('test',)_ftS_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
+mse:0.8345810770988464, mae:0.7260642647743225
+
