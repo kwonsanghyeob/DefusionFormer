@@ -23,9 +23,9 @@ import numpy as np
 warnings.filterwarnings('ignore')
 
 
-class Exp_Main(Exp_Basic):
+class Exp_Main_Multi(Exp_Basic):
     def __init__(self, args):
-        super(Exp_Main, self).__init__(args)
+        super(Exp_Main_Multi, self).__init__(args)
 
     def _build_model(self):
         model_dict = {
@@ -53,14 +53,14 @@ class Exp_Main(Exp_Basic):
         criterion = nn.MSELoss()
         return criterion
 
-    def _predict(self, batch_x, batch_y, batch_x_mark, batch_y_mark):
+    def _predict(self, batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark):
         # decoder input
         dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
         dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
         # encoder - decoder
 
         def _run_model():
-            outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+            outputs = self.model(batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, dec_inp, batch_y_mark)
             if self.args.output_attention:
                 outputs = outputs[0]
             return outputs
@@ -81,7 +81,7 @@ class Exp_Main(Exp_Basic):
         total_loss = []
         self.model.eval()
         with torch.no_grad():
-            for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(vali_loader):
+            for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(vali_loader):
                 batch_x = batch_x.float().to(self.device)
                 batch_y = batch_y.float()
 
@@ -126,16 +126,22 @@ class Exp_Main(Exp_Basic):
 
             self.model.train()
             epoch_time = time.time()
-            for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(train_loader):
+            for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(train_loader):
                 iter_count += 1
                 model_optim.zero_grad()
-                batch_x = batch_x.float().to(self.device)
+                batch_x_L = batch_x_L.float().to(self.device)
+                batch_x_M = batch_x_M.float().to(self.device)
+                batch_x_S = batch_x_S.float().to(self.device)
 
                 batch_y = batch_y.float().to(self.device)
-                batch_x_mark = batch_x_mark.float().to(self.device)
                 batch_y_mark = batch_y_mark.float().to(self.device)
 
-                outputs, batch_y = self._predict(batch_x, batch_y, batch_x_mark, batch_y_mark)
+                batch_x_L_mark = batch_x_L_mark.float().to(self.device)
+                batch_x_M_mark = batch_x_M_mark.float().to(self.device)
+                batch_x_S_mark = batch_x_S_mark.float().to(self.device)
+
+
+                outputs, batch_y = self._predict(batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark)
 
                 loss = criterion(outputs, batch_y)
                 train_loss.append(loss.item())
@@ -188,7 +194,7 @@ class Exp_Main(Exp_Basic):
 
         self.model.eval()
         with torch.no_grad():
-            for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(test_loader):
+            for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(test_loader):
                 batch_x = batch_x.float().to(self.device)
                 batch_y = batch_y.float().to(self.device)
 
@@ -251,7 +257,7 @@ class Exp_Main(Exp_Basic):
 
         self.model.eval()
         with torch.no_grad():
-            for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(pred_loader):
+            for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(pred_loader):
                 batch_x = batch_x.float().to(self.device)
                 batch_y = batch_y.float()
                 batch_x_mark = batch_x_mark.float().to(self.device)

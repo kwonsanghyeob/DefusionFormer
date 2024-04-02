@@ -179,23 +179,25 @@ class Dataset_ETT_hour_Multi(Dataset):
         self.data_stamp = df_stamp
 
     def __getitem__(self, index):
-        s_begin = index
-        s_end = s_begin +  self.seq_len_L
+        s_L_begin = index
+        s_end = s_L_begin +  self.seq_len_L
+        s_M_begin = s_end - self.seq_len_M
+        s_S_begin = s_end - self.seq_len_S
         r_begin = s_end - self.label_len
         r_end = r_begin + self.label_len + self.pred_len
 
-        seq_x_L = np.array(self.data_x[s_begin:s_end], dtype='float')
-        seq_x_M = np.array(self.data_x[s_begin:s_end], dtype='float')
-        seq_x_S = np.array(self.data_x[s_begin:s_end], dtype='float')
+        seq_x_L = np.array(self.data_x[s_L_begin:s_end], dtype='float')
+        seq_x_M = np.array(self.data_x[s_M_begin:s_end], dtype='float')
+        seq_x_S = np.array(self.data_x[s_S_begin:s_end], dtype='float')
 
-        seq_x_L_mark = np.array(self.data_stamp[s_begin:s_end], dtype='float')
-        seq_x_M_mark = np.array(self.data_stamp[s_begin:s_end], dtype='float')
-        seq_x_S_mark = np.array(self.data_stamp[s_begin:s_end], dtype='float')
+        seq_x_L_mark = np.array(self.data_stamp[s_L_begin:s_end], dtype='float')
+        seq_x_M_mark = np.array(self.data_stamp[s_M_begin:s_end], dtype='float')
+        seq_x_S_mark = np.array(self.data_stamp[s_S_begin:s_end], dtype='float')
 
         seq_y = np.array(self.data_y[r_begin:r_end], dtype='float')
         seq_y_mark = np.array(self.data_stamp[r_begin:r_end], dtype='float')
 
-        return seq_x_L, seq_x_M, seq_x_S, seq_x_L_mark, seq_x_M_mark, seq_x_S_mark, seq_y, seq_y_mark
+        return seq_x_L, seq_x_L_mark, seq_x_M, seq_x_M_mark, seq_x_S, seq_x_S_mark, seq_y, seq_y_mark
 
     def __len__(self):
         return len(self.data_x) - self.seq_len_L - self.pred_len + 1

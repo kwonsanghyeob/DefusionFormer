@@ -4,9 +4,10 @@ import torch
 from data_provider.data_loader import *
 import argparse
 from exp.exp_main import Exp_Main
+from exp.exp_main_Multi import Exp_Main_Multi
 import random
 
-def main(sl, ll, pl, model = 'Transformer'):
+def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
@@ -34,9 +35,9 @@ def main(sl, ll, pl, model = 'Transformer'):
 
 
     # forecasting task
-    parser.add_argument('--seq_len_L', type=int, default=sl, help='Long_input sequence length')
-    parser.add_argument('--seq_len_M', type=int, default=sl, help='mid_input sequence length')
-    parser.add_argument('--seq_len_S', type=int, default=sl, help='short_input sequence length')
+    parser.add_argument('--seq_len_L', type=int, default=sl_L, help='Long_input sequence length')
+    parser.add_argument('--seq_len_M', type=int, default=sl_M, help='mid_input sequence length')
+    parser.add_argument('--seq_len_S', type=int, default=sl_S, help='short_input sequence length')
     parser.add_argument('--label_len', type=int, default=ll, help='start token length')
     parser.add_argument('--pred_len', type=int, default=pl, help='prediction sequence length')
 
@@ -51,7 +52,9 @@ def main(sl, ll, pl, model = 'Transformer'):
     parser.add_argument('--e_layers', type=int, default=2, help='num of encoder layers')
     parser.add_argument('--d_layers', type=int, default=1, help='num of decoder layers')
     parser.add_argument('--d_ff', type=int, default=2048, help='dimension of fcn')
-    parser.add_argument('--moving_avg', type=int, default=25, help='window size of moving average')
+    parser.add_argument('--moving_avg_L', type=int, default=25, help='window size of moving average')
+    parser.add_argument('--moving_avg_M', type=int, default=15, help='window size of moving average')
+    parser.add_argument('--moving_avg_S', type=int, default=5, help='window size of moving average')
     parser.add_argument('--factor', type=int, default=1, help='attn factor')
     parser.add_argument('--distil', action='store_false',
                         help='whether to use distilling in encoder, using this argument means not using distilling',
@@ -94,7 +97,7 @@ def main(sl, ll, pl, model = 'Transformer'):
     print('Args in experiment:')
     print(args)
 
-    Exp = Exp_Main
+    Exp = Exp_Main_Multi
     is_training = True
     if args.is_training:
         for ii in range(args.itr):
@@ -135,7 +138,9 @@ if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
     data= pd.read_csv(r'.\Data\test.csv')
-    sl = 18
+    sl_L = 300
+    sl_M = 200
+    sl_S = 100
     pl = 3
     # [Autoformer, Informer, Transformer]
-    main(sl=sl, ll = 9, pl=pl, model = f'Transformer')
+    main(sl_L=sl_L,sl_M =sl_M,sl_S =sl_S, ll = 9, pl=pl, model = f'DeFusionformer')
