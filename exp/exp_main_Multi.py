@@ -81,14 +81,20 @@ class Exp_Main_Multi(Exp_Basic):
         total_loss = []
         self.model.eval()
         with torch.no_grad():
-            for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(vali_loader):
-                batch_x = batch_x.float().to(self.device)
-                batch_y = batch_y.float()
+            for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(vali_loader):
+                batch_x_L = batch_x_L.float().to(self.device)
+                batch_x_M = batch_x_M.float().to(self.device)
+                batch_x_S = batch_x_S.float().to(self.device)
 
-                batch_x_mark = batch_x_mark.float().to(self.device)
+                batch_y = batch_y.float().to(self.device)
                 batch_y_mark = batch_y_mark.float().to(self.device)
 
-                outputs, batch_y = self._predict(batch_x, batch_y, batch_x_mark, batch_y_mark)
+                batch_x_L_mark = batch_x_L_mark.float().to(self.device)
+                batch_x_M_mark = batch_x_M_mark.float().to(self.device)
+                batch_x_S_mark = batch_x_S_mark.float().to(self.device)
+
+                outputs, batch_y = self._predict(batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark)
+
 
                 pred = outputs.detach().cpu()
                 true = batch_y.detach().cpu()
@@ -161,12 +167,12 @@ class Exp_Main_Multi(Exp_Basic):
                 else:
                     loss.backward()
                     model_optim.step()
-
+            #원래는 해당라인
             print(f"Epoch: {epoch + 1} cost time: {time.time() - epoch_time}")
             train_loss = np.average(train_loss)
             vali_loss = self.vali(vali_data, vali_loader, criterion)
             test_loss = self.vali(test_data, test_loader, criterion)
-
+            #### 원래는 해당라인
             print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f} Test Loss: {test_loss:.7f}")
             early_stopping(vali_loss, self.model, path)
             if early_stopping.early_stop:
@@ -195,13 +201,19 @@ class Exp_Main_Multi(Exp_Basic):
         self.model.eval()
         with torch.no_grad():
             for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(test_loader):
-                batch_x = batch_x.float().to(self.device)
-                batch_y = batch_y.float().to(self.device)
+                batch_x_L = batch_x_L.float().to(self.device)
+                batch_x_M = batch_x_M.float().to(self.device)
+                batch_x_S = batch_x_S.float().to(self.device)
 
-                batch_x_mark = batch_x_mark.float().to(self.device)
+                batch_y = batch_y.float().to(self.device)
                 batch_y_mark = batch_y_mark.float().to(self.device)
 
-                outputs, batch_y = self._predict(batch_x, batch_y, batch_x_mark, batch_y_mark)
+                batch_x_L_mark = batch_x_L_mark.float().to(self.device)
+                batch_x_M_mark = batch_x_M_mark.float().to(self.device)
+                batch_x_S_mark = batch_x_S_mark.float().to(self.device)
+
+
+                outputs, batch_y = self._predict(batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark)
 
                 outputs = outputs.detach().cpu().numpy()
                 batch_y = batch_y.detach().cpu().numpy()
@@ -212,7 +224,7 @@ class Exp_Main_Multi(Exp_Basic):
                 preds.append(pred)
                 trues.append(true)
                 if i % 20 == 0:
-                    input = batch_x.detach().cpu().numpy()
+                    input = batch_x_S.detach().cpu().numpy()
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
@@ -257,13 +269,20 @@ class Exp_Main_Multi(Exp_Basic):
 
         self.model.eval()
         with torch.no_grad():
-            for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(pred_loader):
-                batch_x = batch_x.float().to(self.device)
-                batch_y = batch_y.float()
-                batch_x_mark = batch_x_mark.float().to(self.device)
+            for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(pred_loader):
+                batch_x_L = batch_x_L.float().to(self.device)
+                batch_x_M = batch_x_M.float().to(self.device)
+                batch_x_S = batch_x_S.float().to(self.device)
+
+                batch_y = batch_y.float().to(self.device)
                 batch_y_mark = batch_y_mark.float().to(self.device)
 
-                outputs, batch_y = self._predict(batch_x, batch_y, batch_x_mark, batch_y_mark)
+                batch_x_L_mark = batch_x_L_mark.float().to(self.device)
+                batch_x_M_mark = batch_x_M_mark.float().to(self.device)
+                batch_x_S_mark = batch_x_S_mark.float().to(self.device)
+
+
+                outputs, batch_y = self._predict(batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark)
 
                 pred = outputs.detach().cpu().numpy()  # .squeeze()
                 preds.append(pred)

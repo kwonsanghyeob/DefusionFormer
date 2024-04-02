@@ -31,9 +31,9 @@ class DeFusionformer(nn.Module):
         self.decomp_M = series_decomp(kernel_size_M)
         self.decomp_S = series_decomp(kernel_size_S)
 
-        self.Weight_L = nn.Linear(1, configs.d_model)
-        self.Weight_M = nn.Linear(1, configs.d_model)
-        self.Weight_S = nn.Linear(1, configs.d_model)
+        self.Weight_L = nn.Linear(1, 1)
+        self.Weight_M = nn.Linear(1, 1)
+        self.Weight_S = nn.Linear(1, 1)
 
         # Encoder
         self.encoder = Encoder(
@@ -83,10 +83,9 @@ class DeFusionformer(nn.Module):
         # decomp init_short
         seasonal_S_init, trend_S_init = self.decomp_S(x_S_enc)
 
-
         weight_L = self.Weight_L(trend_L_init)
-        weight_M = self.Weight_L(trend_M_init)
-        weight_S = self.Weight_L(trend_S_init)
+        weight_M = self.Weight_M(trend_M_init)
+        weight_S = self.Weight_S(trend_S_init)
 
         enc_L_out = self.enc_embedding(x_L_enc, x_L_mark_enc)
         enc_L_out, attns_L = self.encoder(enc_L_out, attn_mask=enc_self_mask)

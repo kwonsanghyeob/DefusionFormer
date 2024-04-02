@@ -16,27 +16,6 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="oem@192.168.0.2:22 password">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="oem@192.168.0.2:22 password (2)">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="oem@192.168.0.2:22 password (3)">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="oem@192.168.0.2:22 password (4)">
         <serverdata>
           <mappings>
