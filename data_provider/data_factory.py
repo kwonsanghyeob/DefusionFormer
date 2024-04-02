@@ -1,4 +1,4 @@
-from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_Pred
+from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_Pred, Dataset_ETT_hour_Multi
 from torch.utils.data import DataLoader
 
 data_dict = {
@@ -7,7 +7,8 @@ data_dict = {
     'ETTm1': Dataset_ETT_minute,
     'ETTm2': Dataset_ETT_minute,
     'custom': Dataset_Custom,
-    'test': Dataset_ETT_hour
+    'test': Dataset_ETT_hour,
+    'Multi_Input': Dataset_ETT_hour_Multi,
 }
 
 
@@ -32,16 +33,29 @@ def data_provider(args, flag):
         batch_size = args.batch_size
         freq = args.freq
 
-    data_set = Data(
-        root_path=args.root_path,
-        data_path=args.data_path,
-        flag=flag,
-        size=[args.seq_len, args.label_len, args.pred_len],
-        features=args.features,
-        target=args.target,
-        timeenc=timeenc,
-        freq=freq
-    )
+    if args.data == 'Multi_Input':
+        data_set = Data(
+            root_path=args.root_path,
+            data_path=args.data_path,
+            flag=flag,
+            size=[args.seq_len_L,args.seq_len_M,args.seq_len_S, args.label_len, args.pred_len],
+            features=args.features,
+            target=args.target,
+            timeenc=timeenc,
+            freq=freq
+        )
+
+    else:
+        data_set = Data(
+            root_path=args.root_path,
+            data_path=args.data_path,
+            flag=flag,
+            size=[args.seq_len, args.label_len, args.pred_len],
+            features=args.features,
+            target=args.target,
+            timeenc=timeenc,
+            freq=freq
+        )
     print(flag, len(data_set))
     data_loader = DataLoader(
         data_set,
