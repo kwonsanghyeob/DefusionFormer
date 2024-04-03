@@ -31,9 +31,9 @@ class DeFusionformer(nn.Module):
         self.decomp_M = series_decomp(kernel_size_M)
         self.decomp_S = series_decomp(kernel_size_S)
 
-        self.Weight_L = nn.Linear(1, 1)
-        self.Weight_M = nn.Linear(1, 1)
-        self.Weight_S = nn.Linear(1, 1)
+        self.Weight_L = nn.Linear(1, configs.d_model)
+        self.Weight_M = nn.Linear(1, configs.d_model)
+        self.Weight_S = nn.Linear(1, configs.d_model)
 
         # Encoder
         self.encoder = Encoder(

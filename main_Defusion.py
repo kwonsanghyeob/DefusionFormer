@@ -19,7 +19,7 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
 
     parser.add_argument('--model_id', type=str, default='Multi_Input', help='model id')
     parser.add_argument('--model', type=str, default=f'{model}',
-                        help='model name, options: [Autoformer, Informer, Transformer]')
+                        help='model name, options: [Autoformer, Informer, Transformer, Reformer, DeFusionformer]')
 
     # data loader
     parser.add_argument('--data', type=str, default='Multi_Input', help='dataset type')
@@ -137,10 +137,14 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
 if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
+    #server사용시 on
+    import sys
+    sys.path.append('/home/oem/PycharmProjects/DefusionFormer_V2')
+
     data= pd.read_csv(r'.\Data\test.csv')
-    sl_L = 300
-    sl_M = 200
-    sl_S = 100
-    pl = 3
+    sl_L = 336
+    sl_M = 72
+    sl_S = 18
+    pl = 1
     # [Autoformer, Informer, Transformer]
     main(sl_L=sl_L,sl_M =sl_M,sl_S =sl_S, ll = 9, pl=pl, model = f'DeFusionformer')

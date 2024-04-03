@@ -22,3 +22,6 @@ mse:0.8345810770988464, mae:0.7260642647743225
 test_Transformer_('test',)_ftS_sl18_ll9_pl3_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0  
 mse:0.9128987193107605, mae:0.7361736297607422
 
+Multi_Input_DeFusionformer_('Multi_Input',)_ftS_sl336_sl72_sl18_ll9_pl1_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0
+mse:0.7973284125328064, mae:0.6875337958335876
+

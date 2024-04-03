@@ -4,7 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.9.19 (sftp://oem@192.168.0.2:22/home/oem/anaconda3/envs/SH_Torch/bin/python)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="EV_torch" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

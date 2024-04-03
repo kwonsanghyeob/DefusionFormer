@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="oem@192.168.0.2:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="hy@192.168.0.100:51002 password">
         <serverdata>
@@ -16,6 +16,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="oem@192.168.0.2:22 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/oem/PycharmProjects/DefusionFormer_V2" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="oem@192.168.0.2:22 password (4)">
         <serverdata>
           <mappings>
@@ -24,5 +31,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

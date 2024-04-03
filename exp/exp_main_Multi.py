@@ -200,7 +200,7 @@ class Exp_Main_Multi(Exp_Basic):
 
         self.model.eval()
         with torch.no_grad():
-            for i, (batch_x_L, batch_x_M, batch_x_S, batch_x_L_mark, batch_x_M_mark, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(test_loader):
+            for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(test_loader):
                 batch_x_L = batch_x_L.float().to(self.device)
                 batch_x_M = batch_x_M.float().to(self.device)
                 batch_x_S = batch_x_S.float().to(self.device)

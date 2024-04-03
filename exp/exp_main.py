@@ -227,7 +227,7 @@ class Exp_Main(Exp_Basic):
         print(f'mse:{mse}, mae:{mae}, rmse:{rmse},mape:{mape},mspe:{mspe}')
         f = open("result.txt", 'a')
         f.write(setting + "  \n")
-        f.write('mse:{}, mae:{}'.format(mse, mae))
+        f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},mape:{mape},mspe:{mspe}')
         f.write('\n')
         f.write('\n')
         f.close()
