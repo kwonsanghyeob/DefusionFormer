@@ -23,7 +23,7 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
 
     # data loader
     parser.add_argument('--data', type=str, default='Multi_Input', help='dataset type')
-    parser.add_argument('--root_path', type=str, default=r'.\Data', help='root path of the data file')
+    parser.add_argument('--root_path', type=str, default=r'/home/oem/PycharmProjects/DefusionFormer_V2/Data', help='root path of the data file')
     parser.add_argument('--data_path', type=str, default='test.csv', help='data file')
 
     parser.add_argument('--features', type=str, default='S',
@@ -81,7 +81,7 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
     # GPU
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
-    parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=False)
+    parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=True)
     parser.add_argument('--devices', type=str, default='0,1,2,3', help='device ids of multile gpus')
 
     args = parser.parse_args()
@@ -92,7 +92,7 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
         args.devices = args.devices.replace(' ', '')
         device_ids = args.devices.split(',')
         args.device_ids = [int(id_) for id_ in device_ids]
-        args.gpu = args.device_ids[0]
+        args.gpu = args.device_ids[1]
 
     print('Args in experiment:')
     print(args)
@@ -137,11 +137,8 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
 if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
-    #server사용시 on
-    import sys
-    sys.path.append('/home/oem/PycharmProjects/DefusionFormer_V2')
 
-    data= pd.read_csv(r'.\Data\test.csv')
+    data= pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test.csv')
     sl_L = 336
     sl_M = 72
     sl_S = 18

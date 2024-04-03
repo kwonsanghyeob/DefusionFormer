@@ -22,6 +22,8 @@ def MSE(pred, true):
 def RMSE(pred, true):
     return np.sqrt(MSE(pred, true))
 
+def nRMSE(pred, true):
+    return np.mean(np.abs((pred - true) / (np.max(true)-np.min(true))))
 
 def MAPE(pred, true):
     return np.mean(np.abs((pred - true) / true))
@@ -35,7 +37,8 @@ def metric(pred, true):
     mae = MAE(pred, true)
     mse = MSE(pred, true)
     rmse = RMSE(pred, true)
+    nrmse = nRMSE(pred, true)
     mape = MAPE(pred, true)
     mspe = MSPE(pred, true)
 
-    return mae, mse, rmse, mape, mspe
+    return mae, mse, rmse, nrmse, mape, mspe

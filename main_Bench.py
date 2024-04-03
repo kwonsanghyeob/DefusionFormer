@@ -16,7 +16,7 @@ def main(sl, ll, pl, model = 'Transformer'):
     # basic config
     parser.add_argument('--is_training', type=int, default=1, help='status')
 
-    parser.add_argument('--model_id', type=str, default='test_1', help='model id')
+    parser.add_argument('--model_id', type=str, default='test', help='model id')
     parser.add_argument('--model', type=str, default=f'{model}',
                         help='model name, options: [Autoformer, Informer, Transformer]')
 
@@ -34,6 +34,11 @@ def main(sl, ll, pl, model = 'Transformer'):
 
 
     # forecasting task
+
+    parser.add_argument('--seq_len_L', type=int, default=300, help='Long_input sequence length')
+    parser.add_argument('--seq_len_M', type=int, default=200, help='mid_input sequence length')
+    parser.add_argument('--seq_len_S', type=int, default=100, help='short_input sequence length')
+
     parser.add_argument('--seq_len', type=int, default=sl, help='input sequence length')
     parser.add_argument('--label_len', type=int, default=ll, help='start token length')
     parser.add_argument('--pred_len', type=int, default=pl, help='prediction sequence length')
@@ -130,8 +135,8 @@ def main(sl, ll, pl, model = 'Transformer'):
 if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
-    data= pd.read_csv(r'.\Data\test.csv')
+    data= pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test.csv')
     sl = 18
     pl = 3
     # [Autoformer, Informer, Transformer]
-    main(sl=sl, ll = 9, pl=pl, model = f'Transformer')
+    main(sl=sl, ll = 9, pl=pl, model = f'Reformer')

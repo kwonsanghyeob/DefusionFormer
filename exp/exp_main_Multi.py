@@ -77,8 +77,11 @@ class Exp_Main_Multi(Exp_Basic):
 
         return outputs, batch_y
 
-    def vali(self, vali_data, vali_loader, criterion):
+    def vali(self, vali_data, vali_loader, criterion, setting):
         total_loss = []
+
+        preds = []
+        trues = []
         self.model.eval()
         with torch.no_grad():
             for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(vali_loader):
@@ -102,8 +105,43 @@ class Exp_Main_Multi(Exp_Basic):
                 loss = criterion(pred, true)
 
                 total_loss.append(loss)
+
+                ################## 하이퍼#################
+                preds.append(pred)
+                trues.append(true)
+                ################## 하이퍼#################
         total_loss = np.average(total_loss)
         self.model.train()
+
+        ################## 하이퍼#################
+        preds = np.concatenate(preds, axis=0)
+        trues = np.concatenate(trues, axis=0)
+
+
+        preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
+        trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
+        # print('test shape:', preds.shape, trues.shape)
+        # print('test shape:', preds.shape, trues.shape)
+
+        # result save
+        folder_path = './results_hyper/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
+        # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f = open("result_hyper.txt", 'a')
+        f.write(setting + "  \n")
+        f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f.write('\n')
+        f.write('\n')
+        f.close()
+
+        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
+        np.save(folder_path + 'pred.npy', preds)
+        np.save(folder_path + 'true.npy', trues)
+        ################## 하이퍼#################
+
         return total_loss
 
     def train(self, setting):
@@ -168,22 +206,18 @@ class Exp_Main_Multi(Exp_Basic):
                     loss.backward()
                     model_optim.step()
             #원래는 해당라인
-            print(f"Epoch: {epoch + 1} cost time: {time.time() - epoch_time}")
+            # print(f"Epoch: {epoch + 1} cost time: {time.time() - epoch_time}")
             train_loss = np.average(train_loss)
-            vali_loss = self.vali(vali_data, vali_loader, criterion)
-            test_loss = self.vali(test_data, test_loader, criterion)
+            vali_loss = self.vali(vali_data, vali_loader, criterion, setting)
+
             #### 원래는 해당라인
-            print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f} Test Loss: {test_loss:.7f}")
-            early_stopping(vali_loss, self.model, path)
-            if early_stopping.early_stop:
-                print("Early stopping")
-                break
-
-            adjust_learning_rate(model_optim, epoch + 1, self.args)
-
-        best_model_path = path + '/' + 'checkpoint.pth'
-        self.model.load_state_dict(torch.load(best_model_path))
-
+            print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f}")
+            # early_stopping(vali_loss, self.model, path)
+            # if early_stopping.early_stop:
+            #     print("Early stopping")
+            #     break
+            #
+            # adjust_learning_rate(model_optim, epoch + 1, self.args)
         return
 
     def test(self, setting, test=0):
@@ -237,20 +271,20 @@ class Exp_Main_Multi(Exp_Basic):
         print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results/' + setting + '/'
+        folder_path = './results_hyper/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        mae, mse, rmse, mape, mspe = metric(preds, trues)
-        print(f'mse:{mse}, mae:{mae}, rmse:{rmse},mape:{mape},mspe:{mspe}')
-        f = open("result.txt", 'a')
+        mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
+        print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f = open("result_hyper.txt", 'a')
         f.write(setting + "  \n")
-        f.write('mse:{}, mae:{}'.format(mse, mae))
+        f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
         f.write('\n')
         f.write('\n')
         f.close()
 
-        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
+        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
         np.save(folder_path + 'pred.npy', preds)
         np.save(folder_path + 'true.npy', trues)
 
@@ -291,7 +325,7 @@ class Exp_Main_Multi(Exp_Basic):
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
-        folder_path = './results/' + setting + '/'
+        folder_path = './results_hyper/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
