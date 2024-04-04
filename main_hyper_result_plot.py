@@ -49,16 +49,3 @@ if __name__ == '__main__':
         k+=1
     plt.tight_layout()
     plt.show()
-
-    plt.subplot(2, 2, 2)
-    plt.title('Long term = 336')
-    sns.heatmap(s2_heat,cmap='Blues')
-    plt.subplot(2, 2, 3)
-    plt.title('Long term = 504')
-    sns.heatmap(s3_heat,cmap='Blues')
-    plt.subplot(2, 2, 4)
-    plt.title('Long term = 607')
-    sns.heatmap(s4_heat,cmap='Blues')
-    plt.tight_layout()
-    plt.savefig('hyper.png', dpi=300)
-    plt.show()
