@@ -87,13 +87,13 @@ class DeFusionformer(nn.Module):
         weight_M = self.Weight_M(trend_M_init)
         weight_S = self.Weight_S(trend_S_init)
 
-        enc_L_out = self.enc_embedding(seasonal_L_init, x_L_mark_enc)
+        enc_L_out = self.enc_embedding(x_L_enc, x_L_mark_enc)
         enc_L_out, attns_L = self.encoder(enc_L_out, attn_mask=enc_self_mask)
 
-        enc_M_out = self.enc_embedding(seasonal_L_init, x_M_mark_enc)
+        enc_M_out = self.enc_embedding(x_M_enc, x_M_mark_enc)
         enc_M_out, attns_M = self.encoder(enc_M_out, attn_mask=enc_self_mask)
 
-        enc_S_out = self.enc_embedding(seasonal_L_init, x_S_mark_enc)
+        enc_S_out = self.enc_embedding(x_S_enc, x_S_mark_enc)
         enc_S_out, attns_S = self.encoder(enc_S_out, attn_mask=enc_self_mask)
 
         enc_long = weight_L+ enc_L_out

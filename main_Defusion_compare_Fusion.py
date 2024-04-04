@@ -7,7 +7,8 @@ from exp.exp_main import Exp_Main
 from exp.exp_main_Multi import Exp_Main_Multi
 import random
 
-def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
+
+def main(sl_L, sl_M, sl_S, ll, pl, model='Transformer'):
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
@@ -32,7 +33,6 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
     parser.add_argument('--freq', type=str, default='h',
                         help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
-
 
     # forecasting task
     parser.add_argument('--seq_len_L', type=int, default=sl_L, help='Long_input sequence length')
@@ -69,7 +69,7 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
     # optimization
     parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
     parser.add_argument('--itr', type=int, default=1, help='experiments times')
-    parser.add_argument('--train_epochs', type=int, default=5, help='train epochs')
+    parser.add_argument('--train_epochs', type=int, default=20, help='train epochs')
     parser.add_argument('--batch_size', type=int, default=256, help='batch size of train input data')
     parser.add_argument('--patience', type=int, default=3, help='early stopping patience')
     parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
@@ -125,29 +125,33 @@ def main(sl_L, sl_M, sl_S, ll, pl, model = 'Transformer'):
     print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
     exp.train(setting)
 
-    # print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-    # exp.test(setting)
+    print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+    exp.test(setting)
 
-    # if args.do_predict:
-    #     print('>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-    #     exp.predict(setting, True)
+    if args.do_predict:
+        print('>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+        exp.predict(setting, True)
 
     torch.cuda.empty_cache()
 
+
 if __name__ == '__main__':
     import warnings
+
     warnings.filterwarnings('ignore')
     from tqdm import tqdm
-    data= pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test.csv')
-    sl_L = 336
-    sl_M = 72
+    data = pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test.csv')
+    sl_L = 312
+    sl_M = 108
     sl_S = 9
-    pl = 24
-    L = [420, 384,348, 312, 276, 240,204,168]
-    M = [48, 60, 72,84,96,108,120, 132]
-    S = [3, 6, 9, 12, 15, 18, 21, 24]
+    pl = [1, 6, 12, 24, 48]
 
-    for sl_L in tqdm(L):
-        for sl_M in M:
-            for sl_S in S:
-                main(sl_L=sl_L,sl_M =sl_M,sl_S =sl_S, ll = 12, pl=pl, model = f'DeFusionformer')
+    model = ['DeFusionformer_S', 'DeFusionformer_M', 'DeFusionformer_L', 'DeFusionformer_SL', 'DeFusionformer_ML', 'DeFusionformer_SM']
+
+    for MODEL in tqdm(model):
+        for PL in pl:
+            main(sl_L=sl_L, sl_M=sl_M, sl_S=sl_S, ll=66, pl=PL, model=f'{MODEL}')
+
+    # model = 'DeFusionformer'
+    # for PL in pl:
+    #     main(sl_L=sl_L, sl_M=sl_M, sl_S=sl_S, ll=66, pl=PL, model=f'{model}')

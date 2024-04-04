@@ -6,12 +6,12 @@ from layers.Autoformer_EncDec import series_decomp
 from layers.Embed import DataEmbedding
 
 
-class DeFusionformer(nn.Module):
+class DeFusionformer_SM(nn.Module):
     """
     Vanilla Transformer with O(L^2) complexity
     """
     def __init__(self, configs):
-        super(DeFusionformer, self).__init__()
+        super(DeFusionformer_SM, self).__init__()
         self.pred_len = configs.pred_len
         self.output_attention = configs.output_attention
 
@@ -74,39 +74,31 @@ class DeFusionformer(nn.Module):
     def forward(self, x_L_enc, x_L_mark_enc, x_M_enc, x_M_mark_enc, x_S_enc, x_S_mark_enc, x_dec, x_mark_dec,
                 enc_self_mask=None, dec_self_mask=None, dec_enc_mask=None):
 
-        # decomp init_long
-        seasonal_L_init, trend_L_init = self.decomp_L(x_L_enc)
-
         # decomp init_mid
         seasonal_M_init, trend_M_init = self.decomp_M(x_M_enc)
 
         # decomp init_short
         seasonal_S_init, trend_S_init = self.decomp_S(x_S_enc)
 
-        weight_L = self.Weight_L(trend_L_init)
         weight_M = self.Weight_M(trend_M_init)
         weight_S = self.Weight_S(trend_S_init)
 
-        enc_L_out = self.enc_embedding(seasonal_L_init, x_L_mark_enc)
-        enc_L_out, attns_L = self.encoder(enc_L_out, attn_mask=enc_self_mask)
-
-        enc_M_out = self.enc_embedding(seasonal_L_init, x_M_mark_enc)
+        enc_M_out = self.enc_embedding(x_M_enc, x_M_mark_enc)
         enc_M_out, attns_M = self.encoder(enc_M_out, attn_mask=enc_self_mask)
 
-        enc_S_out = self.enc_embedding(seasonal_L_init, x_S_mark_enc)
-        enc_S_out, attns_S = self.encoder(enc_S_out, attn_mask=enc_self_mask)
+        enc_S_out = self.enc_embedding(x_S_enc, x_S_mark_enc)
+        enc_S_out, _ = self.encoder(enc_S_out, attn_mask=enc_self_mask)
 
-        enc_long = weight_L+ enc_L_out
         enc_mid = weight_M + enc_M_out
         enc_short = weight_S + enc_S_out
 
-        enc = torch.concat([enc_long, enc_mid, enc_short], dim=1)
+        enc = torch.concat([enc_mid, enc_short], dim=1)
 
         dec_out = self.dec_embedding(x_dec, x_mark_dec)
         dec_out = self.decoder(dec_out, enc, x_mask=dec_self_mask, cross_mask=dec_enc_mask)
 
         if self.output_attention:
-            return dec_out[:, -self.pred_len:, :], attns_S
+            return dec_out[:, -self.pred_len:, :], _
         else:
             return dec_out[:, -self.pred_len:, :]  # [B, L, D]
 
@@ -132,7 +124,7 @@ if __name__ == '__main__':
     parser.add_argument('--distil', action='store_false',
                         help='whether to use distilling in encoder, using this argument means not using distilling',
                         default=True)
-    parser.add_argument('--dropout', type=float, default=0.005, help='dropout')
+    parser.add_argument('--dropout', type=float, default=0.05, help='dropout')
     parser.add_argument('--embed', type=str, default='fixed',
                         help='time features encoding, options:[timeF, fixed, learned]')
     parser.add_argument('--activation', type=str, default='gelu', help='activation')

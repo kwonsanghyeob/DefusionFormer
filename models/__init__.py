@@ -3,3 +3,9 @@ from .Autoformer import *
 from .Transformer import *
 from .Reformer import *
 from .DeFusionformer import *
+from .DeFusionformer_S import *
+from .DeFusionformer_M import *
+from .DeFusionformer_L import *
+from .DeFusionformer_SM import *
+from .DeFusionformer_SL import *
+from .DeFusionformer_ML import *

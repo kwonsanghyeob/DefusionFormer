@@ -5,7 +5,7 @@ logging.basicConfig(format='%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)
 
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
-from models import Informer, Autoformer, Transformer, Reformer, DeFusionformer
+from models import Informer, Autoformer, Transformer, Reformer, DeFusionformer, DeFusionformer_S, DeFusionformer_M, DeFusionformer_L, DeFusionformer_SL, DeFusionformer_ML, DeFusionformer_SM
 from utils.tools import EarlyStopping, adjust_learning_rate, visual
 from utils.metrics import metric
 
@@ -33,7 +33,13 @@ class Exp_Main_Multi(Exp_Basic):
             'Transformer': Transformer,
             'Informer': Informer,
             'Reformer': Reformer,
-            'DeFusionformer': DeFusionformer
+            'DeFusionformer': DeFusionformer,
+            'DeFusionformer_S': DeFusionformer_S,
+            'DeFusionformer_M': DeFusionformer_M,
+            'DeFusionformer_L': DeFusionformer_L,
+            'DeFusionformer_SL': DeFusionformer_SL,
+            'DeFusionformer_ML': DeFusionformer_ML,
+            'DeFusionformer_SM': DeFusionformer_SM
         }
         model = model_dict[self.args.model](self.args).float()
 
@@ -80,8 +86,6 @@ class Exp_Main_Multi(Exp_Basic):
     def vali(self, vali_data, vali_loader, criterion, setting):
         total_loss = []
 
-        preds = []
-        trues = []
         self.model.eval()
         with torch.no_grad():
             for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(vali_loader):
@@ -106,41 +110,41 @@ class Exp_Main_Multi(Exp_Basic):
 
                 total_loss.append(loss)
 
-                ################## 하이퍼#################
-                preds.append(pred)
-                trues.append(true)
-                ################## 하이퍼#################
+        #         ################## 하이퍼#################
+        #         preds.append(pred)
+        #         trues.append(true)
+        #         ################## 하이퍼#################
         total_loss = np.average(total_loss)
-        self.model.train()
-
-        ################## 하이퍼#################
-        preds = np.concatenate(preds, axis=0)
-        trues = np.concatenate(trues, axis=0)
-
-
-        preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
-        trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
-        # print('test shape:', preds.shape, trues.shape)
-        # print('test shape:', preds.shape, trues.shape)
-
-        # result save
-        folder_path = './results_hyper_Label/' + setting + '/'
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-
-        mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
-        # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        f = open("result_hyper_label.txt", 'a')
-        f.write(setting + "  \n")
-        f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        f.write('\n')
-        f.write('\n')
-        f.close()
-
-        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
-        np.save(folder_path + 'pred.npy', preds)
-        np.save(folder_path + 'true.npy', trues)
-        ################## 하이퍼#################
+        # self.model.train()
+        #
+        # ################## 하이퍼#################
+        # preds = np.concatenate(preds, axis=0)
+        # trues = np.concatenate(trues, axis=0)
+        #
+        #
+        # preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
+        # trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
+        # # print('test shape:', preds.shape, trues.shape)
+        # # print('test shape:', preds.shape, trues.shape)
+        #
+        # # result save
+        # folder_path = './results_hyper_Label/' + setting + '/'
+        # if not os.path.exists(folder_path):
+        #     os.makedirs(folder_path)
+        #
+        # mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
+        # # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        # f = open("result_hyper_label.txt", 'a')
+        # f.write(setting + "  \n")
+        # f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        # f.write('\n')
+        # f.write('\n')
+        # f.close()
+        #
+        # np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
+        # np.save(folder_path + 'pred.npy', preds)
+        # np.save(folder_path + 'true.npy', trues)
+        # ################## 하이퍼#################
 
         return total_loss
 
@@ -209,15 +213,15 @@ class Exp_Main_Multi(Exp_Basic):
             # print(f"Epoch: {epoch + 1} cost time: {time.time() - epoch_time}")
             train_loss = np.average(train_loss)
             vali_loss = self.vali(vali_data, vali_loader, criterion, setting)
-
+            test_loss = self.vali(test_data, test_loader, criterion, setting)
             #### 원래는 해당라인
-            print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f}")
-            # early_stopping(vali_loss, self.model, path)
-            # if early_stopping.early_stop:
-            #     print("Early stopping")
-            #     break
-            #
-            # adjust_learning_rate(model_optim, epoch + 1, self.args)
+            print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f} test Loss: {test_loss:.7f}")
+            early_stopping(vali_loss, self.model, path)
+            if early_stopping.early_stop:
+                print("Early stopping")
+                break
+
+            adjust_learning_rate(model_optim, epoch + 1, self.args)
         return
 
     def test(self, setting, test=0):
@@ -271,13 +275,13 @@ class Exp_Main_Multi(Exp_Basic):
         print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results_hyper/' + setting + '/'
+        folder_path = './results_Fusion/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
         mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
         print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        f = open("result_hyper.txt", 'a')
+        f = open("results_Fusion.txt", 'a')
         f.write(setting + "  \n")
         f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
         f.write('\n')
@@ -325,7 +329,7 @@ class Exp_Main_Multi(Exp_Basic):
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
-        folder_path = './results_hyper/' + setting + '/'
+        folder_path = './results_Fusion/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
