@@ -79,7 +79,7 @@ class DeFusionformer_M(nn.Module):
 
         weight_M = self.Weight_M(trend_M_init)
 
-        enc_M_out = self.enc_embedding(x_M_enc, x_M_mark_enc)
+        enc_M_out = self.enc_embedding(seasonal_M_init, x_M_mark_enc)
         enc_M_out, _ = self.encoder(enc_M_out, attn_mask=enc_self_mask)
 
         enc_mid = weight_M + enc_M_out
