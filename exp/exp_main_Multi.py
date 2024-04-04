@@ -124,13 +124,13 @@ class Exp_Main_Multi(Exp_Basic):
         # print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results_hyper/' + setting + '/'
+        folder_path = './results_hyper_Label/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
         mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
         # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        f = open("result_hyper.txt", 'a')
+        f = open("result_hyper_label.txt", 'a')
         f.write(setting + "  \n")
         f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
         f.write('\n')
