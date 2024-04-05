@@ -140,7 +140,7 @@ if __name__ == '__main__':
     from tqdm import tqdm
     data= pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test.csv')
     sl_L = 312
-    sl_M = 108
+    sl_M = 72
     sl_S = 9
     pl = 24
     LL = []

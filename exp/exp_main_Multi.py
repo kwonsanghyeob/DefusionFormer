@@ -213,13 +213,13 @@ class Exp_Main_Multi(Exp_Basic):
             # print(f"Epoch: {epoch + 1} cost time: {time.time() - epoch_time}")
             train_loss = np.average(train_loss)
             vali_loss = self.vali(vali_data, vali_loader, criterion, setting)
-            test_loss = self.vali(test_data, test_loader, criterion, setting)
+            # test_loss = self.vali(test_data, test_loader, criterion, setting)
             #### 원래는 해당라인
-            print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f} test Loss: {test_loss:.7f}")
-            early_stopping(vali_loss, self.model, path)
-            if early_stopping.early_stop:
-                print("Early stopping")
-                break
+            # print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f} test Loss: {test_loss:.7f}")
+            # early_stopping(vali_loss, self.model, path)
+            # if early_stopping.early_stop:
+            #     print("Early stopping")
+            #     break
 
             adjust_learning_rate(model_optim, epoch + 1, self.args)
         return
