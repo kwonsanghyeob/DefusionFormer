@@ -128,7 +128,7 @@ class Exp_Main_Multi(Exp_Basic):
         # print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results_hyper_Sequence/' + setting + '/'
+        folder_path = './results_hyper_label/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
@@ -275,13 +275,13 @@ class Exp_Main_Multi(Exp_Basic):
         print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results_Fusion/' + setting + '/'
+        folder_path = './results_label/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
         mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
         print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        f = open("results_Fusion.txt", 'a')
+        f = open("results_label.txt", 'a')
         f.write(setting + "  \n")
         f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
         f.write('\n')
@@ -329,7 +329,7 @@ class Exp_Main_Multi(Exp_Basic):
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
-        folder_path = './results_Fusion/' + setting + '/'
+        folder_path = './results_label/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
