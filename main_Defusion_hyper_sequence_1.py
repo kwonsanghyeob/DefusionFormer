@@ -150,4 +150,4 @@ if __name__ == '__main__':
     for sl_L in tqdm(L):
         for sl_M in M:
             for sl_S in S:
-                main(sl_L=sl_L,sl_M =sl_M,sl_S =sl_S, ll = 12, pl=pl, model = f'DeFusionformer')
+                main(sl_L=sl_L,sl_M =sl_M,sl_S =sl_S, ll = 24, pl=pl, model = f'DeFusionformer')

@@ -85,7 +85,7 @@ class Exp_Main_Multi(Exp_Basic):
 
     def vali(self, vali_data, vali_loader, criterion, setting):
         total_loss = []
-
+        preds = [];trues = []
         self.model.eval()
         with torch.no_grad():
             for i, (batch_x_L, batch_x_L_mark, batch_x_M, batch_x_M_mark, batch_x_S, batch_x_S_mark, batch_y, batch_y_mark) in enumerate(vali_loader):
@@ -110,41 +110,41 @@ class Exp_Main_Multi(Exp_Basic):
 
                 total_loss.append(loss)
 
-        #         ################## 하이퍼#################
-        #         preds.append(pred)
-        #         trues.append(true)
-        #         ################## 하이퍼#################
+                ################## 하이퍼#################
+                preds.append(pred)
+                trues.append(true)
+                ################## 하이퍼#################
         total_loss = np.average(total_loss)
-        # self.model.train()
-        #
-        # ################## 하이퍼#################
-        # preds = np.concatenate(preds, axis=0)
-        # trues = np.concatenate(trues, axis=0)
-        #
-        #
-        # preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
-        # trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
-        # # print('test shape:', preds.shape, trues.shape)
-        # # print('test shape:', preds.shape, trues.shape)
-        #
-        # # result save
-        # folder_path = './results_hyper_Label/' + setting + '/'
-        # if not os.path.exists(folder_path):
-        #     os.makedirs(folder_path)
-        #
-        # mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
-        # # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        # f = open("result_hyper_label.txt", 'a')
-        # f.write(setting + "  \n")
-        # f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        # f.write('\n')
-        # f.write('\n')
-        # f.close()
-        #
-        # np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
-        # np.save(folder_path + 'pred.npy', preds)
-        # np.save(folder_path + 'true.npy', trues)
-        # ################## 하이퍼#################
+        self.model.train()
+
+        ################## 하이퍼#################
+        preds = np.concatenate(preds, axis=0)
+        trues = np.concatenate(trues, axis=0)
+
+
+        preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
+        trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
+        # print('test shape:', preds.shape, trues.shape)
+        # print('test shape:', preds.shape, trues.shape)
+
+        # result save
+        folder_path = './results_hyper_Sequence/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
+        # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f = open("result_hyper_Sequence.txt", 'a')
+        f.write(setting + "  \n")
+        f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f.write('\n')
+        f.write('\n')
+        f.close()
+
+        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
+        np.save(folder_path + 'pred.npy', preds)
+        np.save(folder_path + 'true.npy', trues)
+        ################## 하이퍼#################
 
         return total_loss
 
@@ -195,10 +195,10 @@ class Exp_Main_Multi(Exp_Basic):
                 train_loss.append(loss.item())
 
                 if (i + 1) % 100 == 0:
-                    print(f"\titers: {i + 1:.4f}, epoch: {epoch + 1} | loss: {loss.item():.7f}")
+                    # print(f"\titers: {i + 1:.4f}, epoch: {epoch + 1} | loss: {loss.item():.7f}")
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.args.train_epochs - epoch) * train_steps - i)
-                    print(f'\tspeed: {speed:.4f}s/iter; left time: {left_time:.4f}s')
+                    # print(f'\tspeed: {speed:.4f}s/iter; left time: {left_time:.4f}s')
                     iter_count = 0
                     time_now = time.time()
 
