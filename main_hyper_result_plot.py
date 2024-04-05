@@ -12,7 +12,7 @@ def heatmap_plot(L, M, S):
         for mid in M:
             dir_1 = []
             for short in S:
-                dir_1.append(f"./results_hyper/Multi_Input_DeFusionformer_('Multi_Input',)_ftS_sl{Long}_sl{mid}_sl{short}_ll9_pl24_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0")
+                dir_1.append(fr"C:\Users\PESL_RTDS\PycharmProjects\EV_Paper_Combine\DefusionFormer\results_hyper_Sequence\Multi_Input_DeFusionformer_('Multi_Input',)_ftS_sl{Long}_sl{mid}_sl{short}_ll24_pl24_dm512_nh8_el2_dl1_df2048_fc1_ebfixed_dtTrue_test_0")
             dir_Coll.append(np.array(dir_1))
         dir_last.append(np.array(dir_Coll))
     data_last = []
@@ -32,10 +32,10 @@ if __name__ == '__main__':
     M = [48, 60, 72, 84, 96, 108, 120, 132]
     S = [3, 6, 9, 12, 15, 18, 21, 24]
     data = heatmap_plot(L,M, S)
+    import os
+    os.getcwd()
     np.max(data)
     Hyper_1 = pd.DataFrame(data[0], index=M, columns=S)
-
-    plt
 
     plt.rcParams['font.family'] = 'Times New Roman'
     plt.rc('font', size=15)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         Hyper_1 = pd.DataFrame(data[i], index=M, columns=S)
         plt.subplot(2,4,k+1)
         plt.title(f'Long term = {L[i]}')
-        sns.heatmap(Hyper_1,cmap='Blues', vmin=0.675, vmax=0.70)
+        sns.heatmap(Hyper_1,cmap='Blues', vmin=0.81, vmax=0.895)
         k+=1
     plt.tight_layout()
     plt.show()
