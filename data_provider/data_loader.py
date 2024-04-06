@@ -500,4 +500,4 @@ class Dataset_Pred(Dataset):
 
 if __name__ == '__main__':
     root_path = r'C:\Users\PESL_RTDS\PycharmProjects\PyTorch\Data'
-    a = Dataset_ETT_hour(root_path, flag='test', size=None,features='S', data_path='test.csv',target='종합경기장', scale=True, timeenc=0, freq='h')
+    a = Dataset_ETT_hour(root_path, flag='test', size=None,features='S', data_path='test_0.csv',target='종합경기장', scale=True, timeenc=0, freq='h')

@@ -23,7 +23,7 @@ def main(sl, ll, pl, model = 'Transformer'):
     # data loader
     parser.add_argument('--data', type=str, default='Multi_Input', help='dataset type')
     parser.add_argument('--root_path', type=str, default=r'.\Data', help='root path of the data file')
-    parser.add_argument('--data_path', type=str, default='test.csv', help='data file')
+    parser.add_argument('--data_path', type=str, default='test_0.csv', help='data file')
 
     parser.add_argument('--features', type=str, default='S',
                         help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
@@ -135,7 +135,7 @@ def main(sl, ll, pl, model = 'Transformer'):
 if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
-    data= pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test.csv')
+    data= pd.read_csv(r'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test_0.csv')
     sl = 18
     pl = 3
     # [Autoformer, Informer, Transformer]
