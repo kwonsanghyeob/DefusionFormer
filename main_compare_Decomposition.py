@@ -6,9 +6,9 @@ import argparse
 from exp.exp_main import Exp_Main
 from exp.exp_main_Multi import Exp_Main_Multi
 import random
-import natsort
 
-def main(num, sl_L, sl_M, sl_S, ll, pl, target, model='Transformer'):
+
+def main(num,sl_L, sl_M, sl_S, ll, pl, target,model='Transformer'):
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
@@ -24,7 +24,7 @@ def main(num, sl_L, sl_M, sl_S, ll, pl, target, model='Transformer'):
 
     # data loader
     parser.add_argument('--data', type=str, default='Multi_Input', help='dataset type')
-    parser.add_argument('--root_path', type=str, default=r'/home/oem/PycharmProjects/DefusionFormer_V2/Data', help='root path of the data file')
+    parser.add_argument('--root_path', type=str, default=r'./Data', help='root path of the data file')
     parser.add_argument('--data_path', type=str, default=f'test_{num}.csv', help='data file')
 
     parser.add_argument('--features', type=str, default='S',
@@ -69,8 +69,8 @@ def main(num, sl_L, sl_M, sl_S, ll, pl, target, model='Transformer'):
     # optimization
     parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
     parser.add_argument('--itr', type=int, default=1, help='experiments times')
-    parser.add_argument('--train_epochs', type=int, default=5, help='train epochs')
-    parser.add_argument('--batch_size', type=int, default=256, help='batch size of train input data')
+    parser.add_argument('--train_epochs', type=int, default=100, help='train epochs')
+    parser.add_argument('--batch_size', type=int, default=512, help='batch size of train input data')
     parser.add_argument('--patience', type=int, default=3, help='early stopping patience')
     parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
     parser.add_argument('--des', type=str, default='test', help='exp description')
@@ -137,24 +137,21 @@ def main(num, sl_L, sl_M, sl_S, ll, pl, target, model='Transformer'):
 
 if __name__ == '__main__':
     import warnings
+
     warnings.filterwarnings('ignore')
     from tqdm import tqdm
-    import glob
 
     sl_L = 312
     sl_M = 72
     sl_S = 9
     pl = [1, 6, 12, 24, 48]
 
-    model = ['DeFusionformer_S', 'DeFusionformer_M', 'DeFusionformer_L', 'DeFusionformer_SL', 'DeFusionformer_ML', 'DeFusionformer_SM']
-
-    start_str = 'test'
-    data_list = glob.glob(f'/home/oem/PycharmProjects/DefusionFormer_V2/Data/{start_str}*.csv')
-    for i in tqdm(range(8,-1,-1)):
-        a = pd.read_csv(f'/home/oem/PycharmProjects/DefusionFormer_V2/Data/test_{i}.csv')
+    model = ['Fusionformer', 'DeFusionformer']
+    for i in tqdm(range(4,-1,-1)):
+        a = pd.read_csv(f'./Data/test_{i}.csv')
         for MODEL in model:
             for PL in pl:
-                main(num = i ,sl_L=sl_L, sl_M=sl_M, sl_S=sl_S, ll=24, pl=PL, target = f'{a.columns[2]}', model=f'{MODEL}')
+                main(num = i, sl_L=312, sl_M=72, sl_S=9, ll=24, pl=PL, target = f'{a.columns[2]}', model=f'{MODEL}')
 
     # model = 'DeFusionformer'
     # for PL in pl:

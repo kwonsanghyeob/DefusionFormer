@@ -9,3 +9,4 @@ from .DeFusionformer_L import *
 from .DeFusionformer_SM import *
 from .DeFusionformer_SL import *
 from .DeFusionformer_ML import *
+from .Fusionformer import *
