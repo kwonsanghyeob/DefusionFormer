@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from layers.Transformer_EncDec import Decoder, DecoderLayer, Encoder, EncoderLayer
-from layers.SelfAttention_Family import FullAttention, AttentionLayer
+from layers.SelfAttention_Family import ProbAttention, AttentionLayer
 from layers.Autoformer_EncDec import series_decomp
 from layers.Embed import DataEmbedding
 
@@ -40,8 +40,9 @@ class DeFusionformer(nn.Module):
             [
                 EncoderLayer(
                     AttentionLayer(
-                        FullAttention(False, configs.factor, attention_dropout=configs.dropout,
-                                      output_attention=configs.output_attention), configs.d_model, configs.n_heads),
+                        ProbAttention(False, configs.factor, attention_dropout=configs.dropout,
+                                      output_attention=configs.output_attention),
+                        configs.d_model, configs.n_heads),
                     configs.d_model,
                     configs.d_ff,
                     dropout=configs.dropout,
@@ -55,10 +56,10 @@ class DeFusionformer(nn.Module):
             [
                 DecoderLayer(
                     AttentionLayer(
-                        FullAttention(True, configs.factor, attention_dropout=configs.dropout, output_attention=False),
+                        ProbAttention(True, configs.factor, attention_dropout=configs.dropout, output_attention=False),
                         configs.d_model, configs.n_heads),
                     AttentionLayer(
-                        FullAttention(False, configs.factor, attention_dropout=configs.dropout, output_attention=False),
+                        ProbAttention(False, configs.factor, attention_dropout=configs.dropout, output_attention=False),
                         configs.d_model, configs.n_heads),
                     configs.d_model,
                     configs.d_ff,

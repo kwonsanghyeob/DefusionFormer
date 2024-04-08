@@ -118,34 +118,34 @@ class Exp_Main_Multi(Exp_Basic):
         total_loss = np.average(total_loss)
         self.model.train()
 
-        ################## 하이퍼#################
-        # preds = np.concatenate(preds, axis=0)
-        # trues = np.concatenate(trues, axis=0)
-        #
-        #
-        # preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
-        # trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
-        # # print('test shape:', preds.shape, trues.shape)
-        # # print('test shape:', preds.shape, trues.shape)
-        #
-        # # result save
-        # folder_path = './results_Fusion/' + setting + '/'
-        # if not os.path.exists(folder_path):
-        #     os.makedirs(folder_path)
-        #
-        # mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
-        # # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        # f = open("results_Fusion.txt", 'a')
-        # f.write(setting + "  \n")
-        # f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        # f.write('\n')
-        # f.write('\n')
-        # f.close()
-        #
-        # np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
-        # np.save(folder_path + 'pred.npy', preds)
-        # np.save(folder_path + 'true.npy', trues)
-        ################## 하이퍼#################
+        ################# 하이퍼#################
+        preds = np.concatenate(preds, axis=0)
+        trues = np.concatenate(trues, axis=0)
+
+
+        preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
+        trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
+        # print('test shape:', preds.shape, trues.shape)
+        # print('test shape:', preds.shape, trues.shape)
+
+        # result save
+        folder_path = './results_Sequence/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
+        # print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f = open("results_Sequence.txt", 'a')
+        f.write(setting + "  \n")
+        f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
+        f.write('\n')
+        f.write('\n')
+        f.close()
+
+        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, nrmse, mape, mspe]))
+        np.save(folder_path + 'pred.npy', preds)
+        np.save(folder_path + 'true.npy', trues)
+        ################# 하이퍼#################
 
         return total_loss
 
@@ -222,7 +222,7 @@ class Exp_Main_Multi(Exp_Basic):
                 print("Early stopping")
                 break
 
-            adjust_learning_rate(model_optim, epoch + 1, self.args)
+            # adjust_learning_rate(model_optim, epoch + 1, self.args)
         return
 
     def test(self, setting, test=0):
@@ -233,7 +233,7 @@ class Exp_Main_Multi(Exp_Basic):
 
         preds = []
         trues = []
-        folder_path = './test_results_Fusion/' + setting + '/'
+        folder_path = './test_results_bench/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
@@ -276,13 +276,13 @@ class Exp_Main_Multi(Exp_Basic):
         print('test shape:', preds.shape, trues.shape)
 
         # result save
-        folder_path = './results_Fusion/' + setting + '/'
+        folder_path = './results_bench/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
         mae, mse, rmse, nrmse,mape, mspe = metric(preds, trues)
         print(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
-        f = open("results_Fusion.txt", 'a')
+        f = open("results_bench.txt", 'a')
         f.write(setting + "  \n")
         f.write(f'mse:{mse}, mae:{mae}, rmse:{rmse},nrmse{nrmse}, mape:{mape},mspe:{mspe}')
         f.write('\n')
@@ -330,7 +330,7 @@ class Exp_Main_Multi(Exp_Basic):
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
-        folder_path = './results_Fusion/' + setting + '/'
+        folder_path = './results_bench/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 

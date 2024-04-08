@@ -3,11 +3,11 @@ import pandas as pd
 import torch
 from data_provider.data_loader import *
 import argparse
-from exp.exp_main import Exp_Main
-# from exp.exp_main_Multi import Exp_Main_Multi
+# from exp.exp_main import Exp_Main
+from exp.exp_main_Multi import Exp_Main_Multi
 import random
 
-def main(num, sl, ll, pl, target, root,model='Transformer', types = 'test'):
+def main(num, sl_L, sl_M, sl_S, ll, pl, target, root,model='Transformer', types = 'test'):
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
@@ -36,18 +36,18 @@ def main(num, sl, ll, pl, target, root,model='Transformer', types = 'test'):
 
     # forecasting task
 
-    parser.add_argument('--seq_len_L', type=int, default=300, help='Long_input sequence length')
-    parser.add_argument('--seq_len_M', type=int, default=200, help='mid_input sequence length')
-    parser.add_argument('--seq_len_S', type=int, default=100, help='short_input sequence length')
+    parser.add_argument('--seq_len_L', type=int, default=sl_L, help='Long_input sequence length')
+    parser.add_argument('--seq_len_M', type=int, default=sl_M, help='mid_input sequence length')
+    parser.add_argument('--seq_len_S', type=int, default=sl_S, help='short_input sequence length')
 
-    parser.add_argument('--seq_len', type=int, default=sl, help='input sequence length')
-    parser.add_argument('--label_len', type=int, default=ll, help='start token length')
-    parser.add_argument('--pred_len', type=int, default=pl, help='prediction sequence length')
+    parser.add_argument('--seq_len', type=int, default=312, help='input sequence length')
+    parser.add_argument('--label_len', type=int, default=72, help='start token length')
+    parser.add_argument('--pred_len', type=int, default=24, help='prediction sequence length')
 
     # model define
     parser.add_argument('--moving_avg_L', type=int, default=25, help='window size of moving average')
-    parser.add_argument('--moving_avg_M', type=int, default=15, help='window size of moving average')
-    parser.add_argument('--moving_avg_S', type=int, default=5, help='window size of moving average')
+    parser.add_argument('--moving_avg_M', type=int, default=9, help='window size of moving average')
+    parser.add_argument('--moving_avg_S', type=int, default=3, help='window size of moving average')
 
     parser.add_argument('--bucket_size', type=int, default=4, help='for Reformer')
     parser.add_argument('--n_hashes', type=int, default=4, help='for Reformer')
@@ -87,7 +87,7 @@ def main(num, sl, ll, pl, target, root,model='Transformer', types = 'test'):
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
     parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=True)
-    parser.add_argument('--devices', type=str, default='0,1', help='device ids of multile gpus')
+    parser.add_argument('--devices', type=str, default='0,1, 2,3', help='device ids of multile gpus')
 
     args = parser.parse_args()
 
@@ -102,7 +102,7 @@ def main(num, sl, ll, pl, target, root,model='Transformer', types = 'test'):
     print('Args in experiment:')
     print(args)
 
-    Exp = Exp_Main
+    Exp = Exp_Main_Multi
     is_training = True
     if args.is_training:
         for ii in range(args.itr):
@@ -145,14 +145,9 @@ if __name__ == '__main__':
     sl = 9
     pl = 24
     root = '/home/oem/PycharmProjects/DefusionFormer_V2/Data'
-    model = ['Transformer', 'Reformer', 'Autoformer', 'Informer']
+
+    model = ['DeFusionformer_SM']
     for i in tqdm(range(7, -1, -1)):
         a = pd.read_csv(f'./Data/test_{i}.csv')
         for MODEL in model:
-            main(num = i, sl=sl, ll = 9, pl=pl, target = f'{a.columns[2]}', model = f'{MODEL}', root = root, types = 'test')
-
-    # model = ['DeFusionformer']
-    # for i in tqdm(range(8, -1, -1)):
-    #     a = pd.read_csv(f'./Data/test_{i}.csv')
-    #     for MODEL in model:
-    #         main(num = i, sl=18, ll = 9, pl=pl, target = f'{a.columns[2]}', model = f'{MODEL}', root = root, types = 'Multi_Input')
+            main(num = i,sl_L = 312, sl_M = 72, sl_S = 9, ll = 24, pl=pl, target = f'{a.columns[2]}', model = f'{MODEL}', root = root, types = 'Multi_Input')
